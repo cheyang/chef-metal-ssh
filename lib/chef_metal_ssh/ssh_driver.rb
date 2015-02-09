@@ -220,6 +220,9 @@ module ChefMetalSsh
 
     def machine_for(machine_spec, machine_options)
       # ChefMetal::Machine::UnixMachine.new(node, transport_for(node), convergence_strategy_for(node))
+      node = machine_spec.node["automatic"]
+      machine_options["ssh_options"]["ip_address"] = node["ipaddress"] unless (node.nil? or node["ipaddress"].nil?)
+   
       ChefMetal::Machine::UnixMachine.new(machine_spec,
                                           create_ssh_transport(machine_options),
                                           convergence_strategy_for(machine_spec, machine_options))
