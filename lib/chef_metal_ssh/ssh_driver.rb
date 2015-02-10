@@ -222,11 +222,12 @@ module ChefMetalSsh
       # ChefMetal::Machine::UnixMachine.new(node, transport_for(node), convergence_strategy_for(node))
       node = machine_spec.node["automatic"]
       begin
-        machine_options["ip_address"] = node["ipaddress"] unless (node.nil? or node["ipaddress"].nil?)
-      rescue => error
+        machine_options["ip_address"] = node["ipaddress"] unless (node.nil? or node["ipaddress"].nil? or  !machine_options["ip_address"].nil?)
+      rescue NoMethodError => error
          Chef::Log.debug("======================================>")
          Chef::Log.debug(error.inspect)
-         Chef::Log.debug("======================================>")
+         Chef::Log.debug("======================================try to set the ip address>")
+         machine_options.configs << {"ip_address"=>node["ipaddress"]}         
       end   
       ChefMetal::Machine::UnixMachine.new(machine_spec,
                                           create_ssh_transport(machine_options),
